@@ -74,3 +74,60 @@
 })();
 
 
+(function () {
+  const btn = document.getElementById('play-toggle');
+  const audio = document.getElementById('song');
+  const statusEl = document.getElementById('play-status');
+  if (!btn || !audio || !statusEl) return;
+
+  btn.addEventListener('click', () => {
+    audio.paused ? audio.play() : audio.pause();
+  });
+
+  audio.addEventListener('play', () => {
+    btn.classList.add('is-playing');
+    statusEl.textContent = 'now playing';
+  });
+  audio.addEventListener('pause', () => {
+    btn.classList.remove('is-playing');
+    statusEl.textContent = 'paused';
+  });
+  audio.addEventListener('ended', () => {
+    btn.classList.remove('is-playing');
+    statusEl.textContent = 'paused';
+  });
+})();
+
+(function () {
+  const el = document.getElementById('local-time');
+  if (!el) return;
+
+  const fmt = new Intl.DateTimeFormat('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'Asia/Kolkata'
+  });
+
+  function tick() {
+    el.textContent = fmt.format(new Date());
+  }
+  tick();
+  setInterval(tick, 15000);
+})();
+
+(function () {
+  const el = document.getElementById('local-temp');
+  if (!el) return;
+
+  const lat = 25.5941, lon = 85.1376;
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+    .then(r => r.json())
+    .then(data => {
+      const tmp = data?.current_weather?.temperature;
+      if (tmp != null) el.textContent = Math.round(tmp) + '°C';
+    })
+    .catch(() => {});
+})
+();
+
