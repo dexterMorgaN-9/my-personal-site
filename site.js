@@ -120,14 +120,14 @@
   const el = document.getElementById('local-temp');
   if (!el) return;
 
-  const lat = 25.5941, lon = 85.1376;
-  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`)
+  const apiKey = 'aa7773d2b22243b0901173540261207';
+  const city = 'Patna';
+  fetch(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${encodeURIComponent(city)}`)
     .then(r => r.json())
     .then(data => {
-      const tmp = data?.current_weather?.temperature;
+      const tmp = data?.current?.temp_c;
       if (tmp != null) el.textContent = Math.round(tmp) + '°C';
     })
     .catch(() => {});
 })
 ();
-
